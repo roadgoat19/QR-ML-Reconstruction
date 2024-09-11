@@ -1,6 +1,5 @@
 import sys
 from qrcodegen import *
-
 # Use this package: https://github.com/nayuki/QR-Code-generator/tree/master/python
 def generate_QR(message, error_correction, masking, size):
     erclvl = None
@@ -45,7 +44,7 @@ def version(size):
     return (size - 17) // 4
 
 
-def handle_flags(argv, dic):
+def handle_flags(argv, dic) -> dict | None:
     match argv:
         case []:
             return dic
