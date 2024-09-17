@@ -1,9 +1,6 @@
 import sys
 from qrcodegen import *
-<<<<<<< HEAD
 import numpy as np
-=======
->>>>>>> parent of d015839 (Tested fourier transform method and added a file for training the network)
 
 # Use this package: https://github.com/nayuki/QR-Code-generator/tree/master/python
 def generate_QR(message, error_correction, masking, size):
