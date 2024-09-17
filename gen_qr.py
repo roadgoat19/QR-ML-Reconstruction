@@ -1,5 +1,10 @@
 import sys
 from qrcodegen import *
+<<<<<<< HEAD
+import numpy as np
+=======
+>>>>>>> parent of d015839 (Tested fourier transform method and added a file for training the network)
+
 # Use this package: https://github.com/nayuki/QR-Code-generator/tree/master/python
 def generate_QR(message, error_correction, masking, size):
     erclvl = None
@@ -44,7 +49,7 @@ def version(size):
     return (size - 17) // 4
 
 
-def handle_flags(argv, dic) -> dict | None:
+def handle_flags(argv, dic):
     match argv:
         case []:
             return dic
@@ -63,16 +68,24 @@ def file_output(code, name, ecl):
 
     arr = [[1 if code.get_module(i, j) else 0 for i in range(size)] for j in range(size)] # initialize 2D bit array representing the QR code: 0 for light, 1 for dark
 
-    file = open("codes/%s" % name, "w")
+    file = open("codes.csv", "a")
 
-    file.write(f"{ecl}\n") # I don't know if it's worth putting size in the file
-
+    file.write(f"{name},")
+    file.write(f"{ecl},")
 
     for i in range(size):
         for j in range(size):
             file.write("%d" % arr[i][j])
-        #file.write("\n")
 
+    file.write(",")
+
+    transform = np.fft.fft2(arr)
+
+    for i in range(size):
+        for j in range(size):
+            file.write(f"{transform[i][j]}")
+    file.write("\n")
+    file.close()
 #    def helper(row):
 #        map(lambda bit: file.write("%d" % bit), row)
 #        file.write("\n")
