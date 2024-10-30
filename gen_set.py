@@ -12,14 +12,21 @@ def generate_ecl_set(set_size, ecl):
         generator.file_output(qr, message, ecl)
 
 def main():
-    iterations = 10000
+    iterations = 1000 # currently at 1000 for testing
+    
+    f = open("codes.csv", "w") # initialize new file
+    f.write(f'message, ecl, code, dft \n') # write col headers
+    
     for ecl in ["low", "med", "quart", "high"]:
-        print(ecl)
+        print(f'create {ecl} ecl codes...')
         generate_ecl_set(iterations//4, ecl)
-
-    array = [[1,0,1],[0,0,0],[1,1,0]] 
-    transform = fft.fft2(array)
-    print(transform)
+        
+        
+    # testing transform
+    
+    # array = [[1,0,1],[0,0,0],[1,1,0]] 
+    # transform = fft.fft2(array)
+    # print(transform)
 
 
 if __name__ == "__main__":

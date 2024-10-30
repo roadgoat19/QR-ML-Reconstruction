@@ -1,6 +1,7 @@
 import sys
 from qrcodegen import *
 import numpy as np
+import csv
 
 # Use this package: https://github.com/nayuki/QR-Code-generator/tree/master/python
 def generate_QR(message, error_correction, masking, size):
@@ -59,37 +60,34 @@ def handle_flags(argv, dic):
         case [flag, *_]:
             raise Exception("arguments formatted improperly")
 
-def file_output(code, name, ecl):
+def file_output(code, message, ecl):
 
     size = code.get_size()
 
     arr = [[1 if code.get_module(i, j) else 0 for i in range(size)] for j in range(size)] # initialize 2D bit array representing the QR code: 0 for light, 1 for dark
-
-    file = open("codes.csv", "a")
-
-    file.write(f"{name},")
-    file.write(f"{ecl},")
-
-    for i in range(size):
-        for j in range(size):
-            file.write("%d" % arr[i][j])
-
-    file.write(",")
-
-    transform = np.fft.fft2(arr)
-
-    for i in range(size):
-        for j in range(size):
-            file.write(f"{transform[i][j]}")
-    file.write("\n")
-    file.close()
+    
+    code = dft_str = ""
+    dft = np.fft.fft2(arr) # calculate QR code dft
+    
+    # generate code and dft as a string
+    for row in range(size):
+        for col in range(size):
+            code += str(arr[row][col])
+            dft_str += str(dft[row][col])
+    # create and append line
+    line = [message, ecl, code, dft_str]
+    print(line)
+    with open("codes.csv", "a") as csvfile: # open and append codes
+        writer = csv.writer(csvfile)
+        writer.writerow(line)
+    
 #    def helper(row):
 #        map(lambda bit: file.write("%d" % bit), row)
 #        file.write("\n")
 
 #    map(helper, arr)
 
-
+# 
 def main():
 
     argc = len(sys.argv)
@@ -109,8 +107,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-# file = open("test.svg", "w")
-# file.write(svg)
