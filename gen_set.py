@@ -15,7 +15,7 @@ def main():
     iterations = 1000 # currently at 1000 for testing
     
     f = open("codes.csv", "w") # initialize new file
-    f.write(f'message, ecl, code, dft \n') # write col headers
+    f.write(f'message,ecl,code,dft \n') # write col headers
     
     for ecl in ["low", "med", "quart", "high"]:
         print(f'create {ecl} ecl codes...')
