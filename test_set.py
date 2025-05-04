@@ -6,21 +6,21 @@ from scipy import fft
 
 def generate_ecl_set(set_size, ecl, qr_size):
     for i in range(set_size):
-        message = ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(16))
+        mask = -1
+        message = ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(134))
         # message = str(uuid.uuid1())[:15] # random hexcode as message (for now)
-        qr = generator.generate_QR(message, ecl, -1, qr_size)
+        qr = generator.generate_QR(message, ecl, mask, qr_size)
         generator.file_output(qr, message, ecl)
-        
+        if i % 1000 == 0:
+            print(i)
 
 def main():
-    iterations = 60000 # currently at 1000 for testing
+    iterations = 60000 
     
-    f = open("regularset.csv", "w") # initialize new file
+    f = open("big_codes_nomask.csv", "w") # initialize new file
     f.write(f'message,ecl,code,dft \n') # write col headers
     
-    for ecl in ["low", "med", "quart", "high"]:
-        print(f'create {ecl} ecl codes...')
-        generate_ecl_set(iterations//4, ecl, 29)
+    generate_ecl_set(iterations, 'low', 41)
         
         
     # testing transform

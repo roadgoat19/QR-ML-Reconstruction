@@ -7,7 +7,7 @@ import csv
 def generate_QR(message, error_correction, masking, size):
     erclvl = None
     mask = -1
-    N = 29
+    N = size
 
     match error_correction:
         case "low":
@@ -29,11 +29,11 @@ def generate_QR(message, error_correction, masking, size):
         case x:
             mask = int(x)
 
-    match size:
-        case "21":
-            N = 21
-        case _:
-            N = 29
+    # match size:
+    #     case "21":
+    #         N = 21
+    #     case _:
+    #         N = 29
 
     segs = QrSegment.make_segments(message)
     
@@ -66,20 +66,24 @@ def file_output(code, message, ecl):
 
     arr = [[1 if code.get_module(i, j) else 0 for i in range(size)] for j in range(size)] # initialize 2D bit array representing the QR code: 0 for light, 1 for dark
     
-    code = dft_str = ""
-    dft = np.fft.fft2(arr) # calculate QR code dft
-    
-    # generate code and dft as a string
-    for row in range(size):
-        for col in range(size):
-            code += str(arr[row][col])
-            dft_str += str(dft[row][col])
-    # create and append line
-    line = [message, ecl, code, dft_str]
-    print(line)
-    with open("codes.csv", "a") as csvfile: # open and append codes
-        writer = csv.writer(csvfile)
-        writer.writerow(line)
+    file = open("regularset.csv", "a")
+
+    file.write(f"{message},")
+    file.write(f"{ecl},")
+
+    for i in range(size):
+        for j in range(size):
+            file.write("%d" % arr[i][j])
+
+    file.write(",")
+
+    transform = np.fft.fft2(arr)
+
+    for i in range(size):
+        for j in range(size):
+            file.write(f"{transform[i][j]}")
+    file.write("\n")
+    file.close()
     
 #    def helper(row):
 #        map(lambda bit: file.write("%d" % bit), row)
@@ -87,23 +91,23 @@ def file_output(code, message, ecl):
 
 #    map(helper, arr)
 
-# 
-def main():
+# # 
+# def main():
 
-    argc = len(sys.argv)
+#     argc = len(sys.argv)
 
-    match sys.argv:
-        case [_, message, *rest]:
-            options = handle_flags(rest, {})
-            code = generate_QR(message = message, error_correction = options.get("-e"), masking = options.get("-m"), size = options.get("-s"))
+#     match sys.argv:
+#         case [_, message, *rest]:
+#             options = handle_flags(rest, {})
+#             code = generate_QR(message = message, error_correction = options.get("-e"), masking = options.get("-m"), size = options.get("-s"))
 
-            file_output(code, options.get("-f"))
+#             file_output(code, options.get("-f"))
 
-            # for testing:
-            print(str(options))
+#             # for testing:
+#             print(str(options))
 
-        case _:
-            raise Exception("Requires message")
+#         case _:
+#             raise Exception("Requires message")
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
